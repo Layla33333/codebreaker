@@ -31,25 +31,59 @@ android {
 
 dependencies {
 
-    implementation 'androidx.appcompat:appcompat:1.3.1'
 
     //Basic Android support libraries
-    implementation 'andoidx.appcompat:1.3.1'
-    implementation 'androidx.constraintlayout:condtraintlayout:2.1.0'
-    implementation 'androidx.recyclerview:recyclerview;1.2.1'
+    implementation 'androidx.appcompat:appcompat:1.3.1'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.1'
+    implementation 'androidx.recyclerview:recyclerview:1.2.1'
 
     // Material Design components
     implementation 'com.google.android.material:material:1.4.0'
 
     // Preferences/settings library
-    implementation 'andoidx.preference:preference:1.1.1'
+    implementation 'androidx.preference:preference:1.1.1'
 
     // Navigation libraries
-    implementation 'andoidx.fragment:fragment:1.3.6'
-    implementation"androidx.navigation:navigation-fragment:$navigationVersion"
-    implementation"androidx.navigation:navigation-ui:$navigationVersion"
+    implementation 'androidx.fragment:fragment:1.3.6'
+    implementation "androidx.navigation:navigation-fragment:$navigationVersion"
+    implementation "androidx.navigation:navigation-ui:$navigationVersion"
 
+    // Lifecycle (LiveData and ViewModel) libraries
+    def lifecycleVersion = '2.3.1'
+    implementation "androidx.lifecycle:lifecycle-runtime:$lifecycleVersion"
+    implementation "androidx.lifecycle:lifecycle-livedata:$lifecycleVersion"
+    implementation "androidx.lifecycle:lifecycle-viewmodel:$lifecycleVersion"
+    implementation "androidx.lifecycle:lifecycle-common-java8:$lifecycleVersion"
 
+    // Room libraries &  connectors
+    def roomVersion ='2.3.0'
+    implementation "androidx.room:room-runtime:$roomVersion"
+    annotationProcessor "androidx.room:room-compiler:$roomVersion"
+    implementation "androidx.room:room-rxjava2:$roomVersion"
+
+    // Gson library
+    implementation 'com.google.code.gson:gson:2.8.8'
+
+    // Retrofit libraries
+    def retrofitVersion = '2.9.0'
+    implementation "com.squareup.retrofit2:retrofit:$retrofitVersion"
+    implementation "com.squareup.retrofit2:converter-gson:$retrofitVersion"
+    implementation "com.squareup.retrofit2:adapter-rxjava2:$retrofitVersion"
+
+    // Okhttp library
+    implementation 'com.squareup.okhttp3:logging-interceptor:4.9.1'
+
+    //ReactiveX libraries
+    implementation 'io.reactivex.rxjava2:rxjava:2.2.21'
+    implementation 'io.reactivex.rxjava2:rxandroid:2.1.1'
+
+    // Google Sign-in library
+    implementation 'com.google.android.gms:play-services-auth:19.2.0'
+
+    // Stetho (Chromium inspection) library
+    implementation 'com.facebook.stetho:stetho:1.6.0'
+
+    // Test libraries
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
