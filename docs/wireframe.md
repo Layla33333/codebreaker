@@ -5,4 +5,4 @@ oder: 10
 ---
 
 
-[![Wireframediagram](images/wireframe.svg)](pdf/wireframe.pdf)
+[![Wireframediagram](imageswireframe.svg)](pdf/wireframe.pdf)
