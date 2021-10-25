@@ -9,6 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import edu.cnm.deepdive.codebreaker.adapter.GuessItemAdapter;
 import edu.cnm.deepdive.codebreaker.databinding.FragmentPlayBinding;
 import edu.cnm.deepdive.codebreaker.viewmodel.MainViewModel;
 
@@ -39,6 +40,11 @@ public class PlayFragment extends Fragment {
 
         }
     );
+    viewModel.getGame().observe(getViewLifecycleOwner(), (game) -> {
+      GuessItemAdapter adapter = new GuessItemAdapter(getContext(), game.getGuesses());
+      binding.guesses.setAdapter(adapter);
+      binding.guessContainer.setVisibility(game.isSolved() ? View.GONE : View.VISIBLE);
+    });
   }
 
   @Override
