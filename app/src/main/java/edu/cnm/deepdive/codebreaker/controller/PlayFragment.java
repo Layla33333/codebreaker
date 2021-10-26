@@ -17,6 +17,7 @@ import androidx.lifecycle.ViewModelProvider;
 import edu.cnm.deepdive.codebreaker.R;
 import edu.cnm.deepdive.codebreaker.adapter.GuessItemAdapter;
 import edu.cnm.deepdive.codebreaker.databinding.FragmentPlayBinding;
+import edu.cnm.deepdive.codebreaker.model.Game;
 import edu.cnm.deepdive.codebreaker.viewmodel.MainViewModel;
 import java.util.Locale;
 
@@ -42,6 +43,7 @@ public class PlayFragment extends Fragment implements InputFilter {
     binding.submit.setOnClickListener(
         (v) -> viewModel.submitGuess(binding.guess.getText().toString().trim()
         ));
+    binding.guess.setFilters(new InputFilter[]{this});
     return binding.getRoot();
 
   }
@@ -57,17 +59,9 @@ public class PlayFragment extends Fragment implements InputFilter {
 
         }
     );
-    viewModel.getGame().observe(getViewLifecycleOwner(), (game) -> {
-      GuessItemAdapter adapter = new GuessItemAdapter(getContext(), game.getGuesses());
-      binding.guesses.setAdapter(adapter);
-      binding.guessContainer.setVisibility(game.isSolved() ? View.GONE : View.VISIBLE);
-      codeLength = game.getLength();
-      pool = game.getPool();
-      illegalCharacters = String.format(ILLEGAL_CHARACTERS_FORMAT, pool);
-      //TODO Enforce submit conditions
-
-    });
+    viewModel.getGame().observe(getViewLifecycleOwner(), this::update);
   }
+
 
   @Override
   public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
@@ -80,6 +74,7 @@ public class PlayFragment extends Fragment implements InputFilter {
     boolean handled;
     if (item.getItemId() == R.id.new_game) {
       handled = true;
+      binding.guess.getText().clear();
       viewModel.startGame();
     } else {
       handled = super.onOptionsItemSelected(item);
@@ -109,8 +104,21 @@ public class PlayFragment extends Fragment implements InputFilter {
           modifiedSource.length() - (builder.length() - codeLength));
     }
     int newLength = dest.length() - (dend - dstart) + modifiedSource.length();
-    binding.submit.setEnabled(newLength == codeLength);
+    checkSubmitConditions(newLength);
     return modifiedSource;
 
+  }
+  private void update(Game game) {
+    GuessItemAdapter adapter = new GuessItemAdapter(getContext(), game.getGuesses());
+    binding.guesses.setAdapter(adapter);
+    binding.guessContainer.setVisibility(game.isSolved() ? View.GONE : View.VISIBLE);
+    codeLength = game.getLength();
+    pool = game.getPool();
+    illegalCharacters = String.format(ILLEGAL_CHARACTERS_FORMAT, pool);
+    checkSubmitConditions(binding.guess.getText().toString().trim().length());
+  }
+
+  private void checkSubmitConditions(int length) {
+    binding.submit.setEnabled(length == codeLength);
   }
 }
