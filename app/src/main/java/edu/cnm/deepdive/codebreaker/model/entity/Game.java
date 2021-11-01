@@ -18,12 +18,11 @@ import java.util.List;
         @Index(value = {"service_key"}, unique = true)
     }
 )
-
 public class Game {
 
 
   @PrimaryKey(autoGenerate = true)
-  @ColumnInfo(name = "game id")
+  @ColumnInfo(name = "game_id")
   private long id;
 
 

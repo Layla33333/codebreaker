@@ -20,6 +20,7 @@ public interface GuessDao {
   @Insert
   Single<List<Long>> insert(Guess... guesses);
 
+  @Insert
   Single<List<Long>> insert(Collection<Guess> guesses);
 
   @Update

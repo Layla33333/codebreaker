@@ -17,17 +17,18 @@ import retrofit2.http.POST;
 import retrofit2.http.Path;
 
 public interface WebServiceProxy {
+
   @POST("codes")
   Single<Game> startGame(@Body Game game);
 
   @POST("codes/{gameId}/guesses")
-
   Single<Guess> submitGuess(@Body Guess guess, @Path("gameId") String gameId);
 
 
- static WebServiceProxy getInstance() {
-   return InstanceHolder.INSTANCE;
- }
+  static WebServiceProxy getInstance() {
+    return InstanceHolder.INSTANCE;
+  }
+
   class InstanceHolder {
 
     private static final WebServiceProxy INSTANCE;
@@ -41,11 +42,11 @@ public interface WebServiceProxy {
       interceptor.setLevel(Level.BODY);
       OkHttpClient client = new OkHttpClient.Builder()
           .addInterceptor(interceptor)
-              .build();
+          .build();
 
       Retrofit retrofit = new Retrofit.Builder()
           .baseUrl(BuildConfig.BASE_URL)
-          .addConverterFactory(GsonConverterFactory.create())
+          .addConverterFactory(GsonConverterFactory.create(gson))
           .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
           .client(client)
           .build();

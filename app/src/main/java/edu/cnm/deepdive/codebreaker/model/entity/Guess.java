@@ -15,7 +15,7 @@ import java.util.Date;
 @Entity(
     tableName = "guess",
     indices = {
-        @Index(value = "service_key, unique = true")
+        @Index(value = "service_key", unique = true)
     },
     foreignKeys = {
         @ForeignKey(
@@ -28,9 +28,10 @@ import java.util.Date;
 )
 public class Guess {
 
-  @PrimaryKey
+  @PrimaryKey(autoGenerate = true)
   @ColumnInfo(name = "guess_id")
   private long id;
+
   // foreign key //
   @ColumnInfo(name = "game_id", index = true)
   private long gameId;

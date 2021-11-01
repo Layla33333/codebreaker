@@ -1,5 +1,8 @@
 package edu.cnm.deepdive.codebreaker.service;
 
+import androidx.annotation.NonNull;
+import edu.cnm.deepdive.codebreaker.model.dao.GameDao;
+import edu.cnm.deepdive.codebreaker.model.dao.GuessDao;
 import edu.cnm.deepdive.codebreaker.model.entity.Game;
 import edu.cnm.deepdive.codebreaker.model.entity.Guess;
 import io.reactivex.Single;
@@ -9,8 +12,14 @@ public class GameRepository {
 
   private final WebServiceProxy proxy;
 
+  private final GameDao gameDao;
+  private final GuessDao guessDao;
+
   public GameRepository() {
     proxy = WebServiceProxy.getInstance();
+    CodebreakerDatabase datasbase = CodebreakerDatabase.getInstance();
+    gameDao = datasbase.getGameDao();
+    guessDao = datasbase.getGuessDao();
   }
 
   public Single<Game> startGame(String pool, int length) {
@@ -40,7 +49,28 @@ public class GameRepository {
           game.setSolved(guess.isSolution());
           return game;
         })
+        .flatMap(this::insertGameWithGuesses)
         .subscribeOn(Schedulers.io());
 
   }
+
+  @NonNull
+  private Single<Game> insertGameWithGuesses(Game game) {
+    return (game.isSolved())
+      ? gameDao
+          .insert(game)
+          .map((id) -> {
+            game.setId(id);
+            for (Guess guess : game.getGuesses()) {
+              guess.setGameId(id);
+            }
+            return game;
+          })
+          .flatMap((g2) -> guessDao
+              .insert(g2.getGuesses())
+//todo invoke guess.set id for all the guesses
+          .map((ids) -> g2))
+    : Single.just(game);
+  }
+
 }

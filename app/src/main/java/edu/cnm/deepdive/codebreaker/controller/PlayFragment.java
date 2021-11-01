@@ -107,6 +107,7 @@ public class PlayFragment extends Fragment implements InputFilter {
     return modifiedSource;
 
   }
+
   private void update(Game game) {
     GuessItemAdapter adapter = new GuessItemAdapter(getContext(), game.getGuesses());
     binding.guesses.setAdapter(adapter);
