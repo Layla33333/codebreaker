@@ -42,6 +42,11 @@ public class Game {
   @Expose
   private String pool;
 
+
+  @ColumnInfo(name = "pool_size", index = true)
+  private int poolSize;
+
+
   @Expose
   @ColumnInfo(index = true)
   private int length;
@@ -86,6 +91,15 @@ public class Game {
 
   public void setPool(@NonNull String pool) {
     this.pool = pool;
+  }
+
+  public int getPoolSize() {
+    return poolSize;
+  }
+
+  public void setPoolSize(int poolSize) {
+    this.poolSize = poolSize;
+
   }
 
   public int getLength() {
