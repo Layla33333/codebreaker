@@ -2,6 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:tools="http://schemas.android.com/tools"
   package="edu.cnm.deepdive.codebreaker">
+  <uses-permission android:name="android.permission.INTERNET"/>
 
   <application
     android:allowBackup="false"
@@ -12,13 +13,10 @@
     android:supportsRtl="true"
     android:theme="@style/Theme.Codebreaker"
     tools:ignore="AllowBackup">
-    <activity android:name=".controller.LoginActivity">
-    </activity>
     <activity
-      android:exported="true"
-      android:label="@string/app_name"
-      android:name=".controller.MainActivity"
-      android:theme="@style/Theme.Codebreaker.NoActionBar">
+      android:name=".controller.LoginActivity"
+      android:exported="true">
+
       <intent-filter>
 
         <!-- This element declares that an activity is the default (main) activity. -->
@@ -27,8 +25,13 @@
         <category android:name="android.intent.category.LAUNCHER"/>
       </intent-filter>
     </activity>
+
+    <activity
+      android:label="@string/app_name"
+      android:name=".controller.MainActivity"
+      android:theme="@style/Theme.Codebreaker.NoActionBar">
+    </activity>
   </application>
-  <uses-permission android:name="android.permission.INTERNET"/>
 
   <uses-permission android:name="android.permission.INTERNET"/>
 

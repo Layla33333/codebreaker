@@ -34,6 +34,7 @@ public class GoogleSignInRepository {
         .requestEmail()
         .requestId()
         .requestProfile()
+        .requestIdToken(BuildConfig.CLIENT_ID)
         .build();
     client = GoogleSignIn.getClient(context, options);
   }
@@ -84,7 +85,7 @@ public class GoogleSignInRepository {
         .observeOn(Schedulers.io());
   }
 
-  public Completable signOut(){
+  public Completable signOut() {
     return Completable
         .create((emitter) ->
             client
@@ -97,9 +98,10 @@ public class GoogleSignInRepository {
         .subscribeOn(Schedulers.io());
 
   }
+
   private void setAccount(GoogleSignInAccount account) {
     this.account = account;
-    if(account !=null) {
+    if (account != null) {
       Log.d(getClass().getSimpleName(),
           (account.getIdToken() != null) ? getBearerToken(account) : "(none)");
     }
