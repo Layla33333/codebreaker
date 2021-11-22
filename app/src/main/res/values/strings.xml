@@ -10,7 +10,7 @@
 
   <string name="menu_play">Play</string>
   <string name="menu_scores">Top scores</string>
-  <string name="menu_slideshow">Slideshow</string>
+  <string name="menu_settings">Settings</string>
   <string name="submit">Submit</string>
   <string name="guess_hint">text of guess</string>
   <string name="new_game">New game</string>
@@ -19,5 +19,9 @@
   <string name="error_dismiss">Dismiss</string>
   <string name="login_failure_message">Unable to sign in credentials</string>
   <string name="sign_out">Sign out</string>
+  <string name="code_length_pref_title">Code length</string>
+  <string name="code_length_pref_key">code_length_pref</string>
+  <string name="pool_size_pref_key">pool_size_pref</string>
+  <string name="pool_size_pref_title">Pool size</string>
 
 </resources>
