@@ -1,5 +1,6 @@
 package edu.cnm.deepdive.codebreaker.viewmodel;
 
+
 import android.app.Application;
 import android.util.Log;
 import androidx.annotation.NonNull;
@@ -9,27 +10,35 @@ import androidx.lifecycle.LifecycleObserver;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.OnLifecycleEvent;
+import edu.cnm.deepdive.codebreaker.R;
 import edu.cnm.deepdive.codebreaker.model.entity.Game;
 import edu.cnm.deepdive.codebreaker.model.entity.Guess;
 import edu.cnm.deepdive.codebreaker.service.GameRepository;
+import edu.cnm.deepdive.codebreaker.service.SettingsRepository;
 import io.reactivex.disposables.CompositeDisposable;
 
 public class PlayViewModel extends AndroidViewModel implements LifecycleObserver {
 
-  private final GameRepository repository;
+  private final GameRepository gameRepository;
+  private final SettingsRepository settingsRepository;
   private final MutableLiveData<Game> game;
-  private  final MutableLiveData<Throwable> throwable;
+  private final MutableLiveData<Throwable> throwable;
   private final CompositeDisposable pending;
 
+  private int codeLength;
+  private int poolSize;
+  private String basePool;
 
-  public PlayViewModel(
-      @NonNull  Application application) {
+  public PlayViewModel(@NonNull Application application) {
     super(application);
-    repository = new GameRepository();
+    gameRepository = new GameRepository();
+    settingsRepository = new SettingsRepository(application);
     game = new MutableLiveData<>();
     throwable = new MutableLiveData<>();
     pending = new CompositeDisposable();
-    startGame();
+    String[] emojis = application.getResources().getStringArray(R.array.emojis);
+    basePool = String.join("", emojis);
+    subscribeToSettings();
   }
 
   public LiveData<Game> getGame() {
@@ -42,27 +51,34 @@ public class PlayViewModel extends AndroidViewModel implements LifecycleObserver
   }
 
   public void startGame() {
-    throwable.postValue(null);
-    Game game = new Game();
-    game.setPool("ABCDEF"); // Read value from shared preferences.
-    game.setLength(3); // Read value from shared preferences.
-    pending.add(
-        repository
-            .save(game)
-            .subscribe(
-               this.game::postValue,
-                this::postThrowable
+    if (codeLength > 0 && poolSize > 0) {
+      throwable.postValue(null);
+      int [] poolCodePoints = basePool
+          .codePoints()
+          .limit(poolSize)
+          .toArray();
+      Game game = new Game();
+      game.setPool(new String(poolCodePoints, 0, poolCodePoints.length));
+      game.setLength(codeLength);
+      pending.add(
+          gameRepository
+              .save(game)
+              .subscribe(
+                  this.game::postValue,
+                  this::postThrowable
 
-            )
-    );
+              )
+      );
+    }
   }
+
   public void submitGuess(String text) {
     throwable.postValue(null);
     Guess guess = new Guess();
-    guess .setText(text);
+    guess.setText(text);
     //noinspection ConstantConditions
     pending.add(
-        repository
+        gameRepository
             .save(game.getValue(), guess)
             .subscribe(
                 game::postValue,
@@ -70,12 +86,41 @@ public class PlayViewModel extends AndroidViewModel implements LifecycleObserver
             )
     );
   }
+
   @OnLifecycleEvent(Event.ON_STOP)
   private void clearPending() {
     pending.clear();
   }
- private void postThrowable(Throwable throwable) {
-   Log.e(getClass().getSimpleName(),throwable.getMessage(), throwable);
-this.throwable.postValue(throwable);
- }
+
+  private void postThrowable(Throwable throwable) {
+    Log.e(getClass().getSimpleName(), throwable.getMessage(), throwable);
+    this.throwable.postValue(throwable);
+  }
+
+  private void subscribeToSettings() {
+    pending.add(
+        settingsRepository
+            .getCodeLengthPreference()
+            .subscribe(
+                (codeLength) -> {
+                  this.codeLength = codeLength;
+                  startGame();
+                },
+                this::postThrowable
+            )
+    );
+    pending.add(
+        settingsRepository
+            .getPoolSizePreference()
+            .subscribe(
+                (poolSize) -> {
+                  this.poolSize = poolSize;
+                  startGame();
+                },
+                this::postThrowable
+            )
+    );
+  }
+
+
 }
