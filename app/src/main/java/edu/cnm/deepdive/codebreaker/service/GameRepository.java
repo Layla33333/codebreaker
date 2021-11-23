@@ -21,9 +21,9 @@ public class GameRepository {
 
   public GameRepository() {
     proxy = WebServiceProxy.getInstance();
-    CodebreakerDatabase datasbase = CodebreakerDatabase.getInstance();
-    gameDao = datasbase.getGameDao();
-    guessDao = datasbase.getGuessDao();
+    CodebreakerDatabase database = CodebreakerDatabase.getInstance();
+    gameDao = database.getGameDao();
+    guessDao = database.getGuessDao();
   }
 
   public Single<Game> save(Game game) {

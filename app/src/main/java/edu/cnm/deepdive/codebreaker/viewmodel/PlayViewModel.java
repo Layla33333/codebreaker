@@ -29,8 +29,6 @@ public class PlayViewModel extends AndroidViewModel implements DefaultLifecycleO
   private final String poolSizePrefKey;
   private final int codeLengthPrefDefault;
   private final int poolSizePrefDefault;
-
-
   private  final String basePool;
 
   public PlayViewModel(@NonNull Application application) {
