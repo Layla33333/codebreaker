@@ -21,6 +21,9 @@ public class ScoresFragment extends Fragment {
       ViewGroup container, Bundle savedInstanceState) {
 
     binding = FragmentScoresBinding.inflate(inflater, container, false);
+    //TODO Add onClickListener to column headers. Listeners should invoke set methods in scores view model to force a refresh of the query.
+    //TODO Add onItemSelectedListner to spinner. Listner will invoke set methods in ScoresViewModel to force a refresh of the query.
+    //TODO Populate spinners using min and max code length and pool size integer resources.
     View root = binding.getRoot();
     return binding.getRoot();
   }
@@ -30,11 +33,20 @@ public class ScoresFragment extends Fragment {
     super.onViewCreated(view, savedInstanceState);
     viewModel = new ViewModelProvider(this).get(ScoresViewModel.class);
   viewModel
-      .getGames()
+      .getScoreboard()
       .observe(getViewLifecycleOwner(), (games) -> {
         GameSummaryAdapter adapter = new GameSummaryAdapter(getContext(), games);
         binding.games.setAdapter(adapter);
     });
+  viewModel
+      .getCodeLength().observe(getViewLifecycleOwner(), (codeLength) -> {/*TODO Set value of spinner. */});
+  viewModel
+      .getPoolSize()
+      .observe(getViewLifecycleOwner(), (poolSize) -> {/* TODO Set value of spinner.*/});
+  viewModel
+      .getSortedByTime()
+      .observe(getViewLifecycleOwner(), (sortedByTime) -> {/*TODO Update styling and listners*/});
+
   }
 
   @Override
