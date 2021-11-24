@@ -38,7 +38,7 @@
     android:background="?android:selectableItemBackgroundBorderless"
     app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintTop_toTopOf="@id/guess_container"
-    app:layout_constraintBottom_toTopOf="@id/guess_container"
+    app:layout_constraintBottom_toBottomOf="@id/guess_container"
     app:layout_constraintDimensionRatio="2.3"/>
 
 

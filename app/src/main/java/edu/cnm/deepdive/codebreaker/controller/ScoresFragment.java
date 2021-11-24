@@ -4,18 +4,24 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.SeekBar;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import edu.cnm.deepdive.codebreaker.R;
 import edu.cnm.deepdive.codebreaker.adapter.GameSummaryAdapter;
 import edu.cnm.deepdive.codebreaker.databinding.FragmentScoresBinding;
 import edu.cnm.deepdive.codebreaker.viewmodel.ScoresViewModel;
+import java.util.function.BiConsumer;
 
-public class ScoresFragment extends Fragment {
+public class ScoresFragment extends Fragment implements SeekBar.OnSeekBarChangeListener {
 
   private ScoresViewModel viewModel;
   private FragmentScoresBinding binding;
+  private BiConsumer<Integer, Boolean> codeLengthUpdater;
+  private BiConsumer<Integer, Boolean> poolSizeUpdater;
+  private BiConsumer<Boolean, Boolean> sortedByTimeUpdater;
 
   public View onCreateView(@NonNull LayoutInflater inflater,
       ViewGroup container, Bundle savedInstanceState) {
@@ -25,6 +31,11 @@ public class ScoresFragment extends Fragment {
     //TODO Add onItemSelectedListner to spinner. Listner will invoke set methods in ScoresViewModel to force a refresh of the query.
     //TODO Populate spinners using min and max code length and pool size integer resources.
     View root = binding.getRoot();
+    setupParameterChangeConsumers();
+    binding.codeLength.setTag(codeLengthUpdater);
+    binding.poolSize.setTag(poolSizeUpdater);
+    binding.codeLength.setOnSeekBarChangeListener(this);
+    binding.poolSize.setOnSeekBarChangeListener(this);
     return binding.getRoot();
   }
 
@@ -53,5 +64,48 @@ public class ScoresFragment extends Fragment {
   public void onDestroyView() {
     super.onDestroyView();
     binding = null;
+  }
+
+  private void setupParameterChangeConsumers() {
+    codeLengthUpdater = (value, fromUser) -> {
+      binding.codeLengthDisplay.setText(String.valueOf(value));
+      if (fromUser) {
+        viewModel.setCodeLength(value);
+      }
+    };
+    poolSizeUpdater = (value, fromUser) -> {
+      binding.poolSizeDisplay.setText(String.valueOf(value));
+      if (fromUser) {
+        viewModel.setPoolSize(value);
+      }
+    };
+    sortedByTimeUpdater = (sortedByTime, fromUser) -> {
+      if (sortedByTime) {
+        binding.header.time.setText(R.string.time_header_unselected);
+        binding.header.guesses.setText(R.string.guesses_header_selected);
+      } else {
+
+      }
+      if (fromUser) {
+        viewModel.setSortedByTime(sortedByTime);
+      }
+    };
+
+  }
+
+  @Override
+  public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+    ((BiConsumer<Integer, Boolean>)seekBar.getTag()).accept(progress, fromUser);
+
+  }
+
+  @Override
+  public void onStartTrackingTouch(SeekBar seekBar) {
+
+  }
+
+  @Override
+  public void onStopTrackingTouch(SeekBar seekBar) {
+
   }
 }
